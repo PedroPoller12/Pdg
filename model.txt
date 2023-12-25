@@ -1,0 +1,17 @@
+Productos
+    nombre
+    tipo
+    codigo
+    cntidad/stock 
+    descuento
+
+Cliente
+    ci
+    nombre
+    aprellido 
+    telefono
+    direccion
+    email
+    monto a pagar
+    abono
+    deuda

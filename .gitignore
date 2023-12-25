@@ -1,0 +1,43 @@
+git # byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# tests and coverage
+*.pytest_cache
+.coverage
+.directory
+
+# database & logs
+*.db
+*.sql
+*.log
+migrations/
+*media/
+
+# venv
+venv
+.venv
+env
+
+# other
+.DS_Store
+superuser.cmd
+~$*
+.~*
+
+# javascript
+package-lock.json
+
+!staticfiles/.gitkeep
+!staticfiles/
+.vscode/symbols.json
+
+apps/static/assets/node_modules
+apps/static/assets/yarn.lock
+apps/static/assets/.temp
+
+Pipfile.lock
+Pipfile
+!Procfile
+!requirements.txt
+!runtime.txt

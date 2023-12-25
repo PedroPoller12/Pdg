@@ -1,0 +1,28 @@
+
+<!-- Button trigger modal -->
+<a class="cursor-pointer" data-toggle="modal" data-target="#id-{{ target }}" title="eliminar">
+  <i class="text-c-red feather icon-trash"></i>
+</a>  
+<!-- Modal -->
+<div class="modal fade" id="id-{{ target }}" tabindex="-1"
+  aria-hidden="true" style="user-select: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header tile-{{ type }}">
+        <h5 class="modal-title text-white" id="exampleModalLabel">¡Advertencia!</h5>
+      </div>
+      <div class="modal-body text-left px-3">
+        <p class="mb-1" style="line-height: 1.25;">
+          ¿Seguro que desea eliminar {{ item }}?</p>
+        <p class="mb-0 f-12">Esta acción no puede deshacerse</p>
+      </div>
+      <div class="modal-footer px-3">
+        <form method="POST" action="{% url url_name target %}">
+          {% csrf_token %}
+          <button type="submit" class="mb-0 btn btn-{{ type }}">Confirmar</button>
+          <button type="button" class="m-0 btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

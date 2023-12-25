@@ -1,0 +1,33 @@
+{% if items.paginator.count > 15 %}
+    <div class="text-uppercase p-0 pt-1 font-weight-bold text-center" style="user-select: none;">
+      <div class="d-flex justify-content-center py-0 pb-2">
+        <div class="mx-n1">
+          {% if items.has_previous %}
+          <a class="paginador" title="Primera página" href="?page=1">
+            <i class="me-1 feather icon-rewind"></i>
+          </a>
+          {% if not items.number < 3 %}
+          <a class="paginador" title="Página previa" href="?page={{ items.previous_page_number }}">
+            <i class="me-1 feather icon-skip-back"></i>
+          </a>
+          {% endif %}
+          {% endif %}
+        </div>
+        <div class="mx-2 f-12" style="line-height: 21px;">
+          Página {{ items.number }} de {{ items.paginator.num_pages }}
+        </div>
+        <div class="mx-n1">
+          {% if items.has_next %}
+          {% if not items.next_page_number == items.paginator.num_pages %}
+          <a class="paginador" title="Página siguiente" href="?page={{ items.next_page_number }}">
+            <i class="ms-1 feather icon-skip-forward"></i>
+          </a>
+          {% endif %}
+          <a class="paginador" title="Página final" href="?page={{ items.paginator.num_pages }}">
+            <i class="ms-1 feather icon-fast-forward"></i>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+{% endif %}

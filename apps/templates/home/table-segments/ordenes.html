@@ -1,0 +1,54 @@
+{% if items %}
+<table class="table table-hover">
+    <thead class="">
+        <tr class="f-12">
+            <th class="text-center">id</th>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th class="text-center">Estado</th>
+            <th class="text-center">Monto</th>
+            <th class="text-center">Editar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for orden in items %}
+        <tr>
+            <td class="text-center">
+                <h6 class="mb-1">{{ orden.id }}</h6>
+            </td>
+            <td>
+                <h6 class="mb-1">{{ orden.cliente.nombre }} {{ orden.cliente.apellido }}</h6>
+            </td>
+            <td>
+                <h6 class="mb-1">{{ orden.fecha_orden }}</h6>
+            </td>
+            
+            <td class="text-center">
+                {% if orden.completada %}
+                <a class="no-select label theme-bg text-white f-12">Completada</a>
+                {% else %}
+                <a class="no-select label label-danger text-white f-12">Pendiente</a>
+                {% endif %}
+            </td>
+            
+            <td class="text-center">
+                {% if orden.completada %}
+                <h6 class="mb-1">{{ orden.monto_cacelado }}</h6>
+                {% else %}
+                <h6 class="mb-1">{{ orden.monto_pagar }}</h6>
+                {% endif %}
+            </td>
+
+            <td class="text-center no-select">
+                <a href="{% url 'orden_editar' orden.id %}">
+                    <i class="feather icon-edit"></i>
+                </a>
+                {% include 'includes/modal.html' with target=orden.id item='la Orden de compra' url_name='orden_eliminar' type='danger' %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h5 class="text-center">No hay resultados</h5>
+{% endif %}

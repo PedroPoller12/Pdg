@@ -1,0 +1,47 @@
+{% if items %}
+<table class="table table-hover">
+    <thead class="">
+        <tr class="f-12">
+            <th>Cliente</th>
+            <th>Cédula</th>
+            <th>Teléfono</th>
+            <th class="text-center">Estado</th>
+            <th class="text-center no-select">Editar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cliente in items %}
+        <tr>
+            <td>
+                <h6 class="mb-1">{{ cliente.nombre }} {{ cliente.apellido }}</h6>
+            </td>
+            <td>
+                <h6 class="mb-1">{{ cliente.ci_tipo }}-{{ cliente.ci }}</h6>
+            </td>
+            <td>
+                <h6 class="mb-1">{{ cliente.telefono }}</h6>
+            </td>
+            <td class="text-center no-select">
+                {% if cliente.finanza.estado|slice:'1' == '+' %}
+                <a class="label theme-bg text-white f-12">Abonado</a>
+                {% elif cliente.finanza.estado|slice:'1' == '-' %}
+                <a class="label label-danger text-white f-12">En deuda</a>
+                {% else %}
+                <a class="label theme-bg2 text-white f-12">Solvente</a>
+                {% endif %}
+            </td>
+
+            <td class="text-center no-select">
+                <a href="{% url 'cliente_editar' cliente.id %}">
+                    <i class="feather icon-edit"></i>
+                </a>
+                {% include 'includes/modal.html' with target=cliente.id item='al Cliente' url_name='cliente_eliminar' type='danger' %}
+            </td>
+
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h5 class="text-center">No hay resultados</h5>
+{% endif %}

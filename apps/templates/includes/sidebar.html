@@ -1,0 +1,52 @@
+<!-- [ navigation menu ] start -->
+<nav class="pcoded-navbar">
+	<div class="navbar-wrapper">
+		<div class="navbar-brand header-logo">
+			<a href="/" class="b-brand">
+				<div class="b-bg">
+					<i class="feather icon-trending-up"></i>
+				</div>
+				<span class="b-title">Datta Able</span>
+			</a>
+			<a class="mobile-menu" id="mobile-collapse" href="javascript:"><span></span></a>
+		</div>
+		<div class="navbar-content scroll-div">
+			<ul class="nav pcoded-inner-navbar">
+				<!-- <li class="nav-item {% if 'dashboard' in segment %} active {% endif %}">
+					<a href="/" class="nav-link ">
+						<span class="pcoded-micon"><i class="feather icon-home"></i></span>
+						<span class="pcoded-mtext">Dashboard</span>
+					</a>
+				</li> -->
+				<li class="nav-item {% if 'clientes' in segment %} active {% endif %}">
+					<a href="{% url 'clientes' %}" class="nav-link">
+						<span class="pcoded-micon"><i class="feather icon-user"></i></span>
+						<span class="pcoded-mtext">Clientes</span>
+					</a>
+				</li>
+				
+				<li class="nav-item {% if 'productos' in segment %} active {% endif %}">
+					<a href="{% url 'productos' %}" class="nav-link ">
+						<span class="pcoded-micon"><i class="feather icon-file-text"></i></span>
+						<span class="pcoded-mtext">Productos</span>
+					</a>
+				</li>
+				
+				<li class="nav-item {% if 'ordenes' in segment %} active {% endif %}">
+					<a href="{% url 'ordenes' %}" class="nav-link ">
+						<span class="pcoded-micon"><i class="feather icon-file-text"></i></span>
+						<span class="pcoded-mtext">Órdenes de compra</span>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a href="{% url 'logout' %}" class="nav-link">
+						<span class="pcoded-micon"><i class="feather icon-power"></i></span>
+						<span class="pcoded-mtext">Cerrar sesión</span>
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+<!-- [ navigation menu ] end -->

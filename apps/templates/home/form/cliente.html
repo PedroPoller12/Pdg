@@ -1,0 +1,41 @@
+{% extends "layouts/form.html" %}
+{% block form %}
+<form class="row" method="POST">{% csrf_token %}
+
+    <div class="{% if form.ci.errors %}text-danger{% endif %} col-md-4">
+        <label class="form-label">Cédula</label>
+        <div class="input-group">
+            {{ form.ci_tipo }}
+            {{ form.ci }}
+        </div>
+    </div>
+    
+    <div class="{% if form.nombre.errors %}text-danger{% endif %} form-group col-md-4">
+		<label for="nombre">Nombre</label>
+		{{ form.nombre }}
+	</div>
+
+    <div class="{% if form.apellido.errors %}text-danger{% endif %} form-group col-md-4">
+		<label for="apellido">Apellido</label>
+		{{ form.apellido }}
+	</div>
+
+    <div class="{% if form.telefono.errors %}text-danger{% endif %} form-group col-md-6">
+		<label for="telefono">Teléfono</label>
+		{{ form.telefono }}
+	</div>
+    
+    <div class="{% if form.email.errors %}text-danger{% endif %} form-group col-md-6">
+		<label for="email">Correo Electócnico</label>
+		{{ form.email }}
+	</div>
+    
+    <div class="{% if form.direccion.errors %}text-danger{% endif %} form-group col-12">
+        <label for="direccion">Dirección</label>
+        {{ form.direccion }}
+    </div>
+
+	<button type="submit" class="btn btn-primary mx-3">Guardar</button>
+
+</form>
+{% endblock %}

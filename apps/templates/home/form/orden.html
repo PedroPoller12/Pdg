@@ -1,0 +1,100 @@
+{% extends "layouts/form.html" %}
+{% block form %}
+<form class="row" method="POST">{% csrf_token %}
+
+	<div class="{% if form.cliente.errors %}text-danger{% endif %} form-group col-8">
+		<label for="cliente">Cliente</label>
+		{{ form.cliente }}
+	</div>
+
+	<div class="{% if form.monto_cacelado.errors %}text-danger{% endif %} form-group col-4">
+		<label for="monto_cacelado">Monto Cacelado</label>
+		{{ form.monto_cacelado }}
+	</div>
+
+	<!----Inicio Formset----------------------------------------------------------------------------->
+	<div class="d-flex flex-wrap justify-content-beetween">
+		<h5 class="ml-3 mb-1">Productos</h5>
+		<div>
+			<a class="text-c-green" id="add_more"><i class="feather icon-plus-square"></i></a>
+			<a class="text-c-red" id="remove"><i class="feather icon-minus-square"></i></a>
+		</div>
+	</div>
+	{{ formset.management_form }}
+	<div class="d-flex flex-wrap" id="formset">
+	{% for form in formset %}
+		<div class="col-12 p-0 d-flex flex-row" id="row-{{ forloop.counter0 }}">
+
+			<div class="{% if form.producto.errors %}text-danger{% endif %} form-group mb-1 col-8">
+				<label class="f-12 mt-0 mb-1" for="id_orden_item-{{ forloop.counter0 }}-producto">Producto</label>
+				{{ form.producto }}
+			</div>
+
+			<div class="{% if form.cantidad.errors %}text-danger{% endif %} form-group mb-1 col">
+				<label class="f-12 mt-0 mb-1" for="id_orden_item-{{ forloop.counter0 }}-cantidad">Cantidad</label>
+				{{ form.cantidad }}
+			</div>
+			{% if form.instance.pk %}
+			<div class="col-1  pt-4 d-flex justify-contet-center align-contet-center">
+			<label for="id_orden_item-{{ forloop.counter0 }}-DELETE">
+			<i class="feather icon-trash"></i>
+		</label>
+			<div class="form-check">
+					
+					{{ form.DELETE }}
+				</div>
+		</div>
+			{% endif %}
+
+		</div>
+	{% endfor %}
+	</div>
+	<div class="d-none" id="empty_formset">
+		<div class="col-12 p-0 d-flex flex-row" id="row-__prefix__">
+		
+			<div class="{% if form.producto.errors %}text-danger{% endif %} form-group mb-1 col-8">
+				<label class="f-12 mt-0 mb-1" for="id_orden_item-__prefix__-producto">Producto</label>
+				{{ formset.empty_form.producto }}
+			</div>
+		
+			<div class="{% if form.cantidad.errors %}text-danger{% endif %} form-group mb-1 col">
+				<label class="f-12 mt-0 mb-1" for="id_orden_item-__prefix__-cantidad">Cantidad</label>
+				{{ formset.empty_form.cantidad }}
+			</div>
+		
+		</div>
+	</div>
+	<!----Final Formset------------------------------------------------------------------------------->
+
+	{{ form.monto_pagar }}
+	<button type="submit" class="btn btn-primary mx-3 mt-3">Confirmar</button>
+
+
+</form>
+{% endblock form %}
+
+{% block form_scripts %}
+
+<script>
+	$('#add_more').click(function () {
+		var form_idx = $('#id_orden_item-TOTAL_FORMS').val();
+		$('#formset').append($('#empty_formset').html().replace(/__prefix__/g, form_idx));
+		$('#id_orden_item-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+		$('#monto_pagar').val(parseInt(form_idx) + 1);
+
+	});
+
+	$('#remove').click(function () {
+		var form_idz = $('#id_orden_item-TOTAL_FORMS').val();
+		if(form_idz > form_minlimit){
+			form_idz = form_idz - 1
+			$('#row-' + form_idz).remove();
+			$('#id_orden_item-TOTAL_FORMS').val(parseInt(form_idz));
+		}
+	});
+
+
+	let form_minlimit = $('#id_orden_item-TOTAL_FORMS').val();
+</script>
+
+{% endblock form_scripts %}

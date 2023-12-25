@@ -1,0 +1,40 @@
+{% if items %}
+<table class="table table-hover">
+    <thead class="">
+        <tr class="f-12">
+            <th>Nombre</th>
+            <th>Código</th>
+            <th>Tipo</th>
+            <th>Stock</th>
+            <th class="text-center no-select">Editar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for producto in items %}
+        <tr>
+            <td>
+                <h6 class="mb-1">{{ producto.nombre }}</h6>
+            </td>
+            <td>
+                <h6 class="mb-1">{{ producto.codigo }}</h6>
+            </td>
+            <td>
+                <h6 class="mb-1">{{ producto.tipo }}</h6>
+            </td>
+            <td>
+                <h6 class="mb-1">{{ producto.stock }}</h6>
+            </td>
+
+            <td class="text-center no-select">
+                <a href="{% url 'producto_editar' producto.id %}">
+                    <i class="feather icon-edit"></i>
+                </a>
+                {% include 'includes/modal.html' with target=producto.id item='el Producto' url_name='producto_eliminar' type='danger' %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<h5 class="text-center">No hay resultados</h5>
+{% endif %}

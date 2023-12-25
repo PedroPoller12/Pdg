@@ -1,0 +1,32 @@
+{% extends "layouts/form.html" %}
+{% block form %}
+<form class="row" method="POST">{% csrf_token %}
+
+	<div class="{% if form.nombre.errors %}text-danger{% endif %} form-group col-md-6">
+		<label for="nombre">Nombre del Producto</label>
+		{{ form.nombre }}
+	</div>
+
+	<div class="{% if form.tipo.errors %}text-danger{% endif %} form-group col-md-6">
+		<label for="tipo">Tipo de Producto</label>
+		{{ form.tipo }}
+	</div>
+
+	<div class="{% if form.codigo.errors %}text-danger{% endif %} form-group col-md-4">
+		<label for="codigo">Código del Producto</label>
+		{{ form.codigo }}
+	</div>
+
+	<div class="{% if form.stock.errors %}text-danger{% endif %} form-group col-md-4">
+		<label for="stock">Stock</label>
+		{{ form.stock }}
+	</div>
+
+	<div class="{% if form.descuento.errors %}text-danger{% endif %} form-group col-md-4">
+		<label for="descuento">Descuento</label>
+		{{ form.descuento }}
+	</div>
+	<button type="submit" class="btn btn-primary mx-3">Guardar</button>
+
+</form>
+{% endblock %}

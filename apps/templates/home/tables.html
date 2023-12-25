@@ -1,0 +1,76 @@
+{% extends "layouts/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+<!-- Plantilla esqueleto para las tablas -->
+
+{% block content %}
+
+<section class="pcoded-main-container">
+  <div class="pcoded-wrapper">
+
+    <div class="col mt-3">
+      <div class="card Recent-Users">
+        <div class="d-flex justify-content-between card-header">
+          <h5>{{ title }}</h5>
+          <a href="crear">
+            <i class="feather icon-plus"></i>
+          </a>
+        </div>
+        <div class="card-block px-0 py-3">
+          <div class="table-responsive" id="contenedor-tabla">
+
+            {% include table %}
+                        
+          </div>
+          <div id="contenedor-paginador">
+
+            {% include 'includes/paginator.html' %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}
+
+{% block javascripts %}
+<script> 
+  $('#buscador').keyup(function() {
+    var params = new URLSearchParams(window.location.search);
+    var data = {};
+    for (var pair of params.entries()) {
+      data[pair[0]] = pair[1];
+    }
+    data['texto_busqueda'] = $('#buscador').val();
+    $.ajax({
+        url: "{% url segment %}",
+        data: data,
+        dataType: 'json',
+        success: function(data) {
+            $('#contenedor-tabla').html(data.table_html);
+            $('#contenedor-paginador').html(data.paginator_html);
+        }
+    });
+  })
+  $(document).on('click', '.paginador', function(e) {
+    e.preventDefault();
+    var page = $(this).attr('href').split('page=')[1];
+    var params = new URLSearchParams(window.location.search);
+    var data = {};
+    for (var pair of params.entries()) {
+        data[pair[0]] = pair[1];
+    }
+    data['page'] = page;
+    $.ajax({
+        url: "{% url segment %}",
+        data: data,
+        dataType: 'json',
+        success: function(data) {
+            $('#contenedor-tabla').html(data.table_html);
+            $('#contenedor-paginador').html(data.paginator_html);
+        }
+    });
+  });
+  
+</script>
+{% endblock javascripts %}
