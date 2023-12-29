@@ -3,10 +3,9 @@
 	<div class="navbar-wrapper">
 		<div class="navbar-brand header-logo">
 			<a href="/" class="b-brand">
-				<div class="b-bg">
-					<i class="feather icon-trending-up"></i>
+				<div>
+					<img src="../../static/assets/images/logo.png" class="w-50 img-fluid mx-auto d-inline" alt="APUNERG">
 				</div>
-				<span class="b-title">Datta Able</span>
 			</a>
 			<a class="mobile-menu" id="mobile-collapse" href="javascript:"><span></span></a>
 		</div>
@@ -40,10 +39,17 @@
 				</li>
 
 				<li class="nav-item">
-					<a href="{% url 'logout' %}" class="nav-link">
+					<form id="logoutForm" action="{% url 'logout' %}" method="post">
+						{% csrf_token %}
+					</form>
+					<a href="#" onclick="document.getElementById('logoutForm').submit();">
+						<span class="pcoded-micon"><i class="feather icon-power"></i></span>
+						<span class="pcoded-mtext">Cerrar Sesión</span>
+					</a>
+					<!-- <a href="{% url 'logout' %}" class="nav-link">
 						<span class="pcoded-micon"><i class="feather icon-power"></i></span>
 						<span class="pcoded-mtext">Cerrar sesión</span>
-					</a>
+					</a> -->
 				</li>
 			</ul>
 		</div>
