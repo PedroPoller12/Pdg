@@ -1,6 +1,6 @@
 {% extends "layouts/form.html" %}
 {% block form %}
-<form class="row" method="POST">{% csrf_token %}
+<form id="form-productos" class="row" method="POST">{% csrf_token %}
 
 	<div class="{% if form.cliente.errors %}text-danger{% endif %} form-group col-8">
 		<label for="cliente">Cliente</label>
@@ -34,6 +34,7 @@
 				<label class="f-12 mt-0 mb-1" for="id_orden_item-{{ forloop.counter0 }}-cantidad">Cantidad</label>
 				{{ form.cantidad }}
 			</div>
+			
 			{% if form.instance.pk %}
 			<div class="col-1  pt-4 d-flex justify-contet-center align-contet-center">
 			<label for="id_orden_item-{{ forloop.counter0 }}-DELETE">
@@ -43,7 +44,7 @@
 					
 					{{ form.DELETE }}
 				</div>
-		</div>
+			</div>
 			{% endif %}
 
 		</div>
@@ -65,8 +66,10 @@
 		</div>
 	</div>
 	<!----Final Formset------------------------------------------------------------------------------->
-
+	
 	{{ form.monto_pagar }}
+	{{ form.completada }}
+	
 	<button type="submit" class="btn btn-primary mx-3 mt-3">Confirmar</button>
 
 
@@ -76,23 +79,143 @@
 {% block form_scripts %}
 
 <script>
-	$('#add_more').click(function () {
-		var form_idx = $('#id_orden_item-TOTAL_FORMS').val();
-		$('#formset').append($('#empty_formset').html().replace(/__prefix__/g, form_idx));
-		$('#id_orden_item-TOTAL_FORMS').val(parseInt(form_idx) + 1);
-		$('#monto_pagar').val(parseInt(form_idx) + 1);
+	$(document).ready(function(){
+		
+		var totalsObj = {};
+		var lastRow;
+		var DivId;
+		var price = false;
+		var quantity;
+		var grandTotal;
+		
+		$('#add_more').click(function () {
+			form_idx = $('#id_orden_item-TOTAL_FORMS').val();
+			$('#formset').append($('#empty_formset').html().replace(/__prefix__/g, form_idx));
+			$('#id_orden_item-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+		
+		});
 
+		$('#remove').click(function () {
+			var form_idz = $('#id_orden_item-TOTAL_FORMS').val();
+			if(form_idz > form_minlimit){
+				form_idz = form_idz - 1
+				$('#row-' + form_idz).remove();
+				$('#id_orden_item-TOTAL_FORMS').val(parseInt(form_idz));
+				removeFromObj('row-' + form_idz);
+			}
+		});
+
+			// Evento para manejar cuando se selecciona un producto
+			$(document).on('change','select[name$="-producto"]', function(){
+				var $row = $(this).closest('.col-12');
+				DivId = $row.attr('id');
+				price = $(this).find('option:selected').data('price');
+ 				quantity = $row.find('input[name$="-cantidad"]').val();
+				var total = price * quantity;
+				checkAndUpdateTotal(DivId, total);
+			});
+
+			// Evento para manejar cuando se cambia la cantidad
+			$(document).on('change','input[name$="-cantidad"]', function(){
+				if (price) {
+					var $row = $(this).closest('.col-12');
+					var stock = $row.find('option:selected').data('stock');
+					quantity = $(this).val();
+					console.log(quantity)
+					if (quantity <= stock) {
+						if ($(this).hasClass("invalid")) {
+							$(this).removeClass("invalid");
+						}
+						DivId = $row.attr('id');
+						price = $row.find('option:selected').data('price');
+						var total = price * quantity;
+						checkAndUpdateTotal(DivId, total);
+					}else{
+						alert('No hay suficiente disponibilidad para esta compra');
+						$(this).addClass('invalid');
+					}
+					
+				}
+				
+			});
+
+			function checkAndUpdateTotal(DivId, total) {
+				totalsObj[DivId] = total
+				grandTotal = Object.values(totalsObj).reduce((a, b) => a + b, 0);
+				$('#monto_pagar').val(grandTotal);
+			}
+			function removeFromObj(id) {
+				delete totalsObj[id];
+				grandTotal = Object.values(totalsObj).reduce((a, b) => a + b, 0);
+				$('#monto_pagar').val(grandTotal);
+			}
+
+				
 	});
-
-	$('#remove').click(function () {
-		var form_idz = $('#id_orden_item-TOTAL_FORMS').val();
-		if(form_idz > form_minlimit){
-			form_idz = form_idz - 1
-			$('#row-' + form_idz).remove();
-			$('#id_orden_item-TOTAL_FORMS').val(parseInt(form_idz));
+	$('#form-productos').on('submit', function(event) {
+		// Verifica si algún elemento del formulario tiene la clase 'invalid'
+		var invalidElements = this.querySelectorAll('.invalid');
+		var cantidad = $('input[name$="-cantidad"]').val()
+		var deuda = $('input[name$="monto_pagar"]').val()
+		var pago = $('input[name$="monto_cacelado"]').val()
+		
+		var credito = deuda - pago
+		if (invalidElements.length > 0 || cantidad == 0) {
+			event.preventDefault(); // Evita que el formulario se envíe
+			alert('Hay elementos inválidos en el formulario');
+			console.log(cantidad)
+		}
+		if (credito == 0){
+			$('input[name$="completada"]').val('True')
+			
+		}else if ( credito < 0) {
+			event.preventDefault(); // Evita que el formulario se envíe
+			alert('no puede cancelar mas que la deuda asignada');
 		}
 	});
+	$(document).ready(function(){
+		var currentUrl = window.location.href;
+		if (currentUrl.includes('editar')) {
+			$('#cliente').each(function() {
+				$(this).parent().append('<h3>' + $(this).find('option:selected').text() + '</h3>');
+				$(this).addClass('d-none');
+       		});
+			$('select[name$="-producto"]').each(function() {
+				$(this).parent().append('<h4>' + $(this).find('option:selected').text() + '</h4>');
+				$(this).addClass('d-none');
+			});
+			$('input[name$="-cantidad"]').each(function() {
+				$(this).parent().append('<h4>' + $(this).val() + '</h4>');
+				$(this).addClass('d-none');
+			});
+			$('input[name$="-DELETE"]').parent().parent().empty();
+			$('#add_more').addClass('d-none')
+			$('#remove').addClass('d-none')
 
+		}
+		
+
+	});
+
+	 $(document).ready(function(){
+		var currentUrl = window.location.href;
+		if (currentUrl.includes('crear')) {
+			var productObj = {};
+			console.log(productObj)
+			$(document).on('change','select[name$="-producto"]',function() {
+				var selectElement = $(this);
+				var selectedOption = selectElement.val();
+				productObj[selectedOption] = 'selected';
+				console.log(productObj)
+				$('select[name$="-producto"]').not(selectElement).each(function() {
+					var otherSelectElement = $(this);
+					otherSelectElement.find('option[value="'+selectedOption+'"]').remove();
+					console.log(otherSelectElement)
+				});
+			});
+			
+		}
+	}); 
 
 	let form_minlimit = $('#id_orden_item-TOTAL_FORMS').val();
 </script>

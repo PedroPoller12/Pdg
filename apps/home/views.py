@@ -175,6 +175,7 @@ def ordenCrear(request):
     if form.is_valid() and formset.is_valid():#Validar formulario
         orden = form.save(commit=False)#Instanciar objeto en la base de datos y asignar a una variable para manipularlo antes de guardar
         #Espacio par aplicar validaciones de backend
+        
         orden.save()
 
         items = formset.save(commit=False)#Instanciar objeto en la base de datos y asignar a una variable para manipularlo antes de guardar
@@ -192,12 +193,27 @@ def ordenCrear(request):
 @permission_required('home.change_orden', raise_exception=True)#Validar permiso
 def ordenEditar(request, pk):
     orden = get_object_or_404(Orden, pk=pk)#Obtener la orden a editar
+
+    form = OrdenForm(request.POST or None, instance=orden)#Llamar al formulario y cargarle datos de la orden
+    formset = OrdenItemFormset(request.POST or None, instance=orden, prefix='orden_item')#Llamar al formulario hijo y cargarle datos si existen (si hay un error en el formulario y la pàgina recarga)
+
+    if form.is_valid():#Validar formulario
+        form.save()#Guardar
+        return redirect('ordenes')#Redireccionar
+
+    context = {'form':form, 'formset':formset, 'segment': 'ordenes', 'titulo':'Editar Orden de venta'}#Diccionario de objetos que se pasarán a la platilla
+    return render(request, 'home/form/orden.html', context)#Renderizar la plantilla normalmente con los datos del diccionario
+
+    """ orden = get_object_or_404(Orden, pk=pk)#Obtener la orden a editar
     
     form = OrdenForm(request.POST or None, instance=orden)#Llamar al formulario y cargarle datos si existen (si hay un error en el formulario y la pàgina recarga)
     formset = OrdenItemFormset(request.POST or None, instance=orden, prefix='orden_item')#Llamar al formulario hijo y cargarle datos si existen (si hay un error en el formulario y la pàgina recarga)
-
+    print(form.errors)
+    print('#######')
+    print(formset.errors)
     if form.is_valid() and formset.is_valid():#Validar formulario
-        orden = form.save(commit=False)#Instanciar objeto en la base de datos y asignar a una variable para manipularlo antes de guardar
+        
+        #orden = form.save(commit=False)#Instanciar objeto en la base de datos y asignar a una variable para manipularlo antes de guardar
         #Espacio par aplicar validaciones de backend
         orden.save(force_update=True)#Guardar forzando a que edite 
 
@@ -210,10 +226,11 @@ def ordenEditar(request, pk):
                 orden_item.orden = orden
             orden_item.save() #guardar elemento hijo
         
-        return redirect('ordenes')#Redireccionar
+        return redirect('ordenes')#Redireccionar 
 
     context = {'form':form, 'formset':formset, 'segment': 'ordenes', 'titulo':'Editar Orden de venta'}#Diccionario de objetos que se pasarán a la platilla
     return render(request, 'home/form/orden.html', context)#Renderizar la plantilla normalmente con los datos del diccionario
+    """
 
 @login_required(login_url="/login/")
 @permission_required('home.delete_orden', raise_exception=True)#Validar permiso

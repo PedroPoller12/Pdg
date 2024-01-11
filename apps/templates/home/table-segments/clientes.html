@@ -13,21 +13,21 @@
         {% for cliente in items %}
         <tr>
             <td>
-                <h6 class="mb-1">{{ cliente.nombre }} {{ cliente.apellido }}</h6>
+                <a href="{% url 'cliente_editar' cliente.id %}"><h6 class="mb-1">{{ cliente.nombre }} {{ cliente.apellido }}</h6></a>
             </td>
             <td>
-                <h6 class="mb-1">{{ cliente.ci_tipo }}-{{ cliente.ci }}</h6>
+                <a href="{% url 'cliente_editar' cliente.id %}"><h6 class="mb-1">{{ cliente.ci_tipo }}-{{ cliente.ci }}</h6></a>
             </td>
             <td>
-                <h6 class="mb-1">{{ cliente.telefono }}</h6>
+                <a href="{% url 'cliente_editar' cliente.id %}"><h6 class="mb-1">{{ cliente.telefono }}</h6></a>
             </td>
             <td class="text-center no-select">
                 {% if cliente.finanza.estado|slice:'1' == '+' %}
-                <a class="label theme-bg text-white f-12">Abonado</a>
+                <a class="label theme-bg text-white f-12" href="{% url 'cliente_editar' cliente.id %}">Abonado</a>
                 {% elif cliente.finanza.estado|slice:'1' == '-' %}
-                <a class="label label-danger text-white f-12">En deuda</a>
+                <a class="label label-danger text-white f-12" href="{% url 'cliente_editar' cliente.id %}">En deuda</a>
                 {% else %}
-                <a class="label theme-bg2 text-white f-12">Solvente</a>
+                <a class="label theme-bg2 text-white f-12" href="{% url 'cliente_editar' cliente.id %}">Solvente</a>
                 {% endif %}
             </td>
 

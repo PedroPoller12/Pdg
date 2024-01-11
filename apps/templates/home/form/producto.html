@@ -22,6 +22,11 @@
 		{{ form.stock }}
 	</div>
 
+	<div class="{% if form.precio.errors %}text-danger{% endif %} form-group col-md-4">
+		<label for="precio">Precio</label>
+		{{ form.precio }}
+	</div>
+
 	<div class="{% if form.descuento.errors %}text-danger{% endif %} form-group col-md-4">
 		<label for="descuento">Descuento</label>
 		{{ form.descuento }}
