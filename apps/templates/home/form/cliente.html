@@ -34,6 +34,10 @@
         <label for="direccion">Dirección</label>
         {{ form.direccion }}
     </div>
+    <div class="{% if form.direccion.errors %}text-danger{% endif %} form-group col-12">
+        <label for="direccion">Estatus</label>
+        {{ form.estatus }}
+    </div>
 
 	<button type="submit" class="btn btn-primary mx-3">Guardar</button>
 

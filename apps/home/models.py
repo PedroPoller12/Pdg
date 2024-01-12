@@ -32,14 +32,19 @@ class Cliente(models.Model):
         ('E', 'E'),
         ('J', 'J')
     )
+    STAT_OPT=(
+        ('Abonado', 'Abonado'),
+        ('Solvente', 'Solvente'),
+    )
 
     ci = models.CharField(max_length=10, validators=[MinLengthValidator(7), RegexValidator(r'^[0-9]{1,2}[.]?[0-9]{3}[.]?[0-9]{3}$')], unique=True, null=True)
-    ci_tipo =  models.CharField(default='V', max_length=1, choices=CI_OPT, null=True)
-    nombre = models.CharField(max_length=30, null=True)
-    apellido = models.CharField(max_length=30, null=True)                   #max_length=19 ^[\+]?[(]?[0-9]{1,2}[)]?[-\s]?[0-9]{3}[-\s]?[0-9]{3}[-\s]?[0-9]{2}[-\s]?[0-9]{2}$
-    telefono = models.CharField(max_length=18, validators=[RegexValidator(r'^[\+]?[(]?[0-9]{1,2}[)]?[-\s]?[0-9]{3}[-\s]?[0-9]{3}[-\s]?[0-9]{4}$')], blank=True, null=True)
-    direccion = models.CharField(max_length=100, blank=True, null=True)
-    email = models.EmailField(max_length=30, blank=True, null=True)  
+    ci_tipo =  models.CharField(default='V', max_length=1, choices=CI_OPT)
+    nombre = models.CharField(max_length=30, null=False)
+    apellido = models.CharField(max_length=30, null=False)                   #max_length=19 ^[\+]?[(]?[0-9]{1,2}[)]?[-\s]?[0-9]{3}[-\s]?[0-9]{3}[-\s]?[0-9]{2}[-\s]?[0-9]{2}$
+    telefono = models.CharField(max_length=18, validators=[RegexValidator(r'^[\+]?[(]?[0-9]{1,2}[)]?[-\s]?[0-9]{3}[-\s]?[0-9]{3}[-\s]?[0-9]{4}$')], blank=False, null=False)
+    direccion = models.CharField(max_length=100, blank=False, null=False)
+    email = models.EmailField(max_length=30, blank=True, null=True)
+    estatus = models.CharField(choices=STAT_OPT, max_length=8, default='Solvente')  
     
     history = HistoricalRecords()
 
@@ -93,21 +98,6 @@ class Orden(models.Model):
     class Meta:
         verbose_name = ("Orden")
         verbose_name_plural = ("Ordenes")
-
-    """ @property
-    def estado(self):
-        abono = self.monto_cacelado
-        deuda = self.monto_pagar
-        credit = deuda - abono
-        print('INSTANCIA')
-        print(abono)
-        print(deuda)
-        print(credit)
-        if credit == 0:
-            self.completada = True
-            print(self.completada) 
-        else:
-            return f'{sta}{round(credit, 2)}'  """
     
 
     def __str__(self):

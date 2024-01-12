@@ -18,6 +18,7 @@ urlpatterns = [
     path('ordenes/crear', views.ordenCrear, name='orde_crear'),
     path('ordenes/<str:pk>/editar', views.ordenEditar, name='orden_editar'),
     path('ordenes/<str:pk>/eliminar', views.ordenEliminar, name='orden_eliminar'),
+    path('generate-excel/', views.download_excel, name='generate-excel'),
 
     #URL's Productos----------------------------------------------------------------------->
     path('productos/', views.productos, name='productos'),

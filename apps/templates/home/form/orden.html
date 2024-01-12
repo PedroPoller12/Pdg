@@ -79,6 +79,7 @@
 {% block form_scripts %}
 
 <script>
+	//actualiza los datos del monto a pagar
 	$(document).ready(function(){
 		
 		var totalsObj = {};
@@ -152,6 +153,7 @@
 
 				
 	});
+	//Valida que los datos sean correctos al enviar
 	$('#form-productos').on('submit', function(event) {
 		// Verifica si algún elemento del formulario tiene la clase 'invalid'
 		var invalidElements = this.querySelectorAll('.invalid');
@@ -173,6 +175,7 @@
 			alert('no puede cancelar mas que la deuda asignada');
 		}
 	});
+	//Inhabilita los campos que no sean el monto cancelado
 	$(document).ready(function(){
 		var currentUrl = window.location.href;
 		if (currentUrl.includes('editar')) {
@@ -196,7 +199,7 @@
 		
 
 	});
-
+	//Perite que no se repitan elementos en la orden de compra
 	 $(document).ready(function(){
 		var currentUrl = window.location.href;
 		if (currentUrl.includes('crear')) {

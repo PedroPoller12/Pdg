@@ -52,6 +52,7 @@ class ClienteForm(ModelForm):
             'telefono',
             'direccion',
             'email',
+            'estatus'
             )
         widgets ={
             'ci_tipo': Select(attrs={'class': 'form-control col-2', 'placeholder':'', 'id':'ci_tipo'}),
@@ -61,6 +62,7 @@ class ClienteForm(ModelForm):
             'telefono': TextInput(attrs={'class': 'form-control', 'placeholder':'', 'id':'telefono'}),
             'direccion': TextInput(attrs={'class': 'form-control', 'placeholder':'', 'id':'direccion'}),
             'email': TextInput(attrs={'class': 'form-control', 'placeholder':'', 'id':'email'}),
+            'estatus': Select(attrs={'class': 'form-control col-3', 'placeholder':'', 'id':'estatus'}),
         }
 
 class ProductoSelect(forms.Select):

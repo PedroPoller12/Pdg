@@ -1,11 +1,15 @@
 from django.http import JsonResponse
+from django.http import HttpResponse
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required, permission_required
+from django.utils.timezone import localtime
 from .models import *
 from .forms import *
+import openpyxl
+
 
 def test(request):
     context = {'segment':'dashboard'}
@@ -204,34 +208,6 @@ def ordenEditar(request, pk):
     context = {'form':form, 'formset':formset, 'segment': 'ordenes', 'titulo':'Editar Orden de venta'}#Diccionario de objetos que se pasarán a la platilla
     return render(request, 'home/form/orden.html', context)#Renderizar la plantilla normalmente con los datos del diccionario
 
-    """ orden = get_object_or_404(Orden, pk=pk)#Obtener la orden a editar
-    
-    form = OrdenForm(request.POST or None, instance=orden)#Llamar al formulario y cargarle datos si existen (si hay un error en el formulario y la pàgina recarga)
-    formset = OrdenItemFormset(request.POST or None, instance=orden, prefix='orden_item')#Llamar al formulario hijo y cargarle datos si existen (si hay un error en el formulario y la pàgina recarga)
-    print(form.errors)
-    print('#######')
-    print(formset.errors)
-    if form.is_valid() and formset.is_valid():#Validar formulario
-        
-        #orden = form.save(commit=False)#Instanciar objeto en la base de datos y asignar a una variable para manipularlo antes de guardar
-        #Espacio par aplicar validaciones de backend
-        orden.save(force_update=True)#Guardar forzando a que edite 
-
-        for orden_item in formset.deleted_objects:#Eliminar los objetoss seleccionados para eliminiar 
-            orden_item.delete()
-        items = formset.save(commit=False)#Instanciar objeto en la base de datos y asignar a una variable para manipularlo antes de guardar
-
-        for orden_item in items:#Recorrer la lista de objetos
-            if not orden_item.id:#Validar si el item es nuevo y de ser así, asiganarle el padre
-                orden_item.orden = orden
-            orden_item.save() #guardar elemento hijo
-        
-        return redirect('ordenes')#Redireccionar 
-
-    context = {'form':form, 'formset':formset, 'segment': 'ordenes', 'titulo':'Editar Orden de venta'}#Diccionario de objetos que se pasarán a la platilla
-    return render(request, 'home/form/orden.html', context)#Renderizar la plantilla normalmente con los datos del diccionario
-    """
-
 @login_required(login_url="/login/")
 @permission_required('home.delete_orden', raise_exception=True)#Validar permiso
 def ordenEliminar(request, pk):
@@ -242,3 +218,25 @@ def ordenEliminar(request, pk):
         return redirect(request.GET.get('next'))#Evaluar si existe una página a la que redireccionar y redireccionar
     return redirect('ordenes')#Redireccionar normalmente
 #Fin Órdenes-------------------------------------------------------------------------------------->
+
+#reportes------------------------------------------------------------------------------------------>
+@login_required(login_url="/login/")
+@permission_required('home.view_orden', raise_exception=True)#Validar permiso
+def download_excel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="Report.xlsx"'
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+
+    # Supongamos que tienes un modelo llamado MyModel y quieres exportar todos los registros
+    records = Orden.objects.all().values()#Listar a todos los ordenes
+
+    for record in records:
+        # Asegúrate de que el objeto de fecha/hora no tenga información de zona horaria
+        record['fecha_orden'] = localtime(record['fecha_orden']).replace(tzinfo=None)
+
+        ws.append(list(record.values()))
+
+    wb.save(response)
+    return response
