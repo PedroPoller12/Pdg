@@ -11,9 +11,28 @@
       <div class="card Recent-Users">
         <div class="d-flex justify-content-between card-header">
           <h5>{{ title }}</h5>
-          <a href="crear">
-            <i class="feather icon-plus"></i>
-          </a>
+          <div class="btn-group" role="group">
+            {% if title == "Clientes" %}
+            <a href="{% url 'cliente_reporte' %}" class="btn btn-secondary">
+              <i class="feather icon-download"></i>Descargar Clientes
+            </a>
+            {% elif title == "Productos" %}
+            <a href="{% url 'inventario_reporte' %}" class="btn btn-secondary">
+              <i class="feather icon-download"></i>Inventario
+            </a>
+            <a href="{% url 'producto_salida' %}" class="btn btn-secondary">
+              <i class="feather icon-file-text"></i>Salida de Productos
+            </a>
+            {% elif title == "Órdenes de compra" %}
+            <a href="{% url 'orden_reporte' %}" class="btn btn-secondary">
+              <i class="feather icon-download"></i>Descargar Ordenes
+            </a>
+            {% endif %}
+
+            <a href="crear" class="btn btn-primary">
+              <i class="feather icon-plus"></i>
+            </a>
+          </div>
         </div>
         <div class="card-block px-0 py-3">
           <div class="table-responsive" id="contenedor-tabla">

@@ -220,23 +220,148 @@ def ordenEliminar(request, pk):
 #Fin Órdenes-------------------------------------------------------------------------------------->
 
 #reportes------------------------------------------------------------------------------------------>
+#reporte de ordenes
 @login_required(login_url="/login/")
 @permission_required('home.view_orden', raise_exception=True)#Validar permiso
-def download_excel(request):
+def reporteOrdenes(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="Report.xlsx"'
 
     wb = openpyxl.Workbook()
     ws = wb.active
 
-    # Supongamos que tienes un modelo llamado MyModel y quieres exportar todos los registros
-    records = Orden.objects.all().values()#Listar a todos los ordenes
+    # Añade los títulos de los campos en la primera fila
+    titles = ['ID', 'Cliente', 'Fecha de Orden', 'Monto a Pagar', 'Monto Cancelado', 'Completada']
+    ws.append(titles)
+
+    # Supongamos que tienes un modelo llamado Orden y quieres exportar todos los registros
+    records = Orden.objects.all()
 
     for record in records:
         # Asegúrate de que el objeto de fecha/hora no tenga información de zona horaria
-        record['fecha_orden'] = localtime(record['fecha_orden']).replace(tzinfo=None)
+        fecha_orden = localtime(record.fecha_orden).replace(tzinfo=None)
 
-        ws.append(list(record.values()))
+        # Construye la fila con los datos
+        row = [
+            record.id,
+            record.cliente.nombre + ' ' + record.cliente.apellido if record.cliente else '',  # Accede al nombre y apellido del cliente
+            fecha_orden.strftime('%Y-%m-%d %H:%M:%S'),  # Formatea la fecha
+            record.monto_pagar,
+            record.monto_cacelado,
+            record.completada
+        ]
 
+        ws.append(row)
+
+    wb.save(response)
+    return response
+
+#Reporte de salida de productos
+@login_required(login_url="/login/")
+@permission_required('home.view_orden', raise_exception=True)#Validar permiso
+def productoSalida(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="Report.xlsx"'
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+
+    # Encabezados para el reporte
+    titles = ['Orden de Compra (ID)', 'Fecha de salida', 'Código', 'Nombre', 'Cantidad']
+    ws.append(titles)
+
+    # Obtener todas las OrdenItem y sus respectivos Productos
+    orden_items = OrdenItem.objects.select_related('producto').all()
+
+    for item in orden_items:
+        # Asegúrate de que el objeto de fecha/hora no tenga información de zona horaria
+        fecha_salida = localtime(item.fecha_salida).replace(tzinfo=None) if item.fecha_salida else None
+        fecha_salida_str = fecha_salida.strftime('%Y-%m-%d %H:%M:%S') if fecha_salida else ''
+
+        # Construye la fila con los datos
+        row = [
+            item.orden.id if item.orden else '',
+            fecha_salida_str,
+            item.producto.codigo if item.producto else '',
+            item.producto.nombre if item.producto else '',
+            item.cantidad
+        ]
+
+        ws.append(row)
+
+    wb.save(response)
+    return response
+
+#reporte de inventario
+@login_required(login_url="/login/")
+@permission_required('home.view_producto', raise_exception=True)
+def reporteInventario(request):
+    # Crear una respuesta HTTP con el contenido adecuado para un archivo Excel
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="Inventario.xlsx"'
+
+    # Crear un nuevo libro de Excel y seleccionar la hoja activa
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Inventario de Productos"
+
+    # Agregar los títulos de las columnas
+    column_titles = ['Código de Producto', 'Tipo de Producto', 'Nombre', 'Stock', 'Precio', 'Descuento']
+    ws.append(column_titles)
+
+    # Consultar todos los productos en la base de datos
+    productos = Producto.objects.all()
+
+    # Iterar sobre cada producto y escribir la información en el archivo Excel
+    for producto in productos:
+        row = [
+            producto.codigo,
+            producto.tipo,
+            producto.nombre,
+            producto.stock,
+            producto.precio,
+            producto.descuento
+        ]
+        ws.append(row)
+
+    # Guardar el libro de Excel en la respuesta HTTP
+    wb.save(response)
+    return response
+
+#reporte de clientes
+@login_required(login_url="/login/")
+@permission_required('home.view_cliente', raise_exception=True)
+def reporteClientes(request):
+    # Crear una respuesta HTTP con el contenido adecuado para un archivo Excel
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="Clientes.xlsx"'
+
+    # Crear un nuevo libro de Excel y seleccionar la hoja activa
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Clientes"
+
+    # Agregar los títulos de las columnas
+    column_titles = [ 'Nacionalidad','CI', 'Nombre', 'Apellido', 'Teléfono', 'Dirección', 'Email', 'Estatus']
+    ws.append(column_titles)
+
+    # Consultar todos los clientes en la base de datos
+    clientes = Cliente.objects.all()
+
+    # Iterar sobre cada cliente y escribir la información en el archivo Excel
+    for cliente in clientes:
+        row = [ 
+            cliente.get_ci_tipo_display(),  # Obtiene la representación de la opción seleccionada
+            cliente.ci,
+            cliente.nombre,
+            cliente.apellido,
+            cliente.telefono,
+            cliente.direccion,
+            cliente.email if cliente.email else '',  # Comprueba si hay un email para evitar incluir None
+            cliente.get_estatus_display()  # Obtiene la representación de la opción seleccionada
+        ]
+        ws.append(row)
+
+    # Guardar el libro de Excel en la respuesta HTTP
     wb.save(response)
     return response

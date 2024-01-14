@@ -122,9 +122,9 @@
 					var $row = $(this).closest('.col-12');
 					var stock = $row.find('option:selected').data('stock');
 					quantity = $(this).val();
-					console.log(quantity)
 					if (quantity <= stock) {
 						if ($(this).hasClass("invalid")) {
+							
 							$(this).removeClass("invalid");
 						}
 						DivId = $row.attr('id');
@@ -132,8 +132,10 @@
 						var total = price * quantity;
 						checkAndUpdateTotal(DivId, total);
 					}else{
-						alert('No hay suficiente disponibilidad para esta compra');
+						
 						$(this).addClass('invalid');
+						alert('No hay suficiente disponibilidad para esta compra');
+						
 					}
 					
 				}
@@ -162,19 +164,40 @@
 		var pago = $('input[name$="monto_cacelado"]').val()
 		
 		var credito = deuda - pago
+		//Evita que se envie un formulario con cantidad de productos igual a 0
+		//o mayor al stock
 		if (invalidElements.length > 0 || cantidad == 0) {
 			event.preventDefault(); // Evita que el formulario se envíe
 			alert('Hay elementos inválidos en el formulario');
-			console.log(cantidad)
+		}else{
+			//cambia el estado de la compra cuando el monto a pagar es cancelado
+			if (credito == 0){
+				console.log(credito)
+				$('input[name$="completada"]').val('True')
+				
+			}else if ( credito < 0) {
+				event.preventDefault(); // Evita que el formulario se envíe
+				alert('no puede cancelar mas que la deuda asignada');
+			}
 		}
-		if (credito == 0){
-			$('input[name$="completada"]').val('True')
+		//seccion que Valida que no hayan productos repetidos
+		var valores = [];
+		//funcion que verifica que no hayan elementos repetidos en los productos
+		function tieneRepetidos(array) {
+			return array.length !== new Set(array).size;
+		}
+		//llena el arreglo con los valores
+		$('select[name$="-producto"]').each(function(){
+			valores.push($(this).val());
 			
-		}else if ( credito < 0) {
+		});
+		//condicion que previene el evento
+		if (tieneRepetidos(valores)){
 			event.preventDefault(); // Evita que el formulario se envíe
-			alert('no puede cancelar mas que la deuda asignada');
+			alert('No puede haber productos repetidos en la orden de compra');
 		}
 	});
+
 	//Inhabilita los campos que no sean el monto cancelado
 	$(document).ready(function(){
 		var currentUrl = window.location.href;
@@ -199,26 +222,6 @@
 		
 
 	});
-	//Perite que no se repitan elementos en la orden de compra
-	 $(document).ready(function(){
-		var currentUrl = window.location.href;
-		if (currentUrl.includes('crear')) {
-			var productObj = {};
-			console.log(productObj)
-			$(document).on('change','select[name$="-producto"]',function() {
-				var selectElement = $(this);
-				var selectedOption = selectElement.val();
-				productObj[selectedOption] = 'selected';
-				console.log(productObj)
-				$('select[name$="-producto"]').not(selectElement).each(function() {
-					var otherSelectElement = $(this);
-					otherSelectElement.find('option[value="'+selectedOption+'"]').remove();
-					console.log(otherSelectElement)
-				});
-			});
-			
-		}
-	}); 
 
 	let form_minlimit = $('#id_orden_item-TOTAL_FORMS').val();
 </script>

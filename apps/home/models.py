@@ -107,7 +107,7 @@ class Orden(models.Model):
 class OrdenItem(models.Model):
     orden = models.ForeignKey('home.Orden', on_delete=models.CASCADE, null=True)
     producto = models.ForeignKey('home.Producto', on_delete=models.RESTRICT, null=True)
-    cantidad = models.IntegerField(validators=[int_list_validator(allow_negative=False), MinValueValidator(1)], null=False, default=0)#Cantidad de salida del producto, descuenta del stock del producto
+    cantidad = models.IntegerField(validators=[int_list_validator(allow_negative=False), MinValueValidator(1)],blank=False, null=False)#Cantidad de salida del producto, descuenta del stock del producto
     fecha_salida = models.DateTimeField(blank=True, null=True)#fecha de la salida del producto 
 
     history = HistoricalRecords()
@@ -120,7 +120,6 @@ class OrdenItem(models.Model):
     def save(self, *args, **kwargs):
         # Primero, guardamos el objeto para evitar errores de referencia nula
         super().save(*args, **kwargs)
-
         # Luego, restamos la cantidad de la orden del stock del producto
         new_stock = self.producto.stock - self.cantidad
         self.producto.stock = new_stock
