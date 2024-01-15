@@ -15,6 +15,7 @@ class Producto(models.Model):
     stock = models.IntegerField(validators=[int_list_validator(allow_negative=False)], null=True)
     descuento = models.IntegerField(validators=[int_list_validator(allow_negative=False)], default=0)
     precio = models.IntegerField(validators=[int_list_validator(allow_negative=False)], default=0)
+    ventas = models.IntegerField(default=0,validators=[int_list_validator(allow_negative=False)], null=True)
 
     history = HistoricalRecords()
 
@@ -123,6 +124,11 @@ class OrdenItem(models.Model):
         # Luego, restamos la cantidad de la orden del stock del producto
         new_stock = self.producto.stock - self.cantidad
         self.producto.stock = new_stock
+        #Agregamos el valor de la cantidad a la cantidad de ventas
+        if self.producto.ventas is not None:
+            self.producto.ventas = self.producto.ventas + self.cantidad
+        else:
+            self.producto.ventas = self.cantidad
         self.producto.save()
 
     def __str__(self):

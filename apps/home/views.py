@@ -17,7 +17,11 @@ def test(request):
 
 @login_required(login_url="/login/")
 def dashboard(request):
-    context = {'segment':'dashboard'}
+    productos_list = Producto.objects.all().order_by('-ventas')[:5]#Listar los 5 productos mas vendidos
+    #Listar a todos los ordenes
+    ordenes_list = Orden.objects.all().order_by('-fecha_orden')[:5]
+
+    context = {'productos':productos_list,'ordenes':ordenes_list, 'segment':'dashboard'}
     return render(request, 'home/dashboard.html', context)#Cargar la platilla del dashboard
 
 #Clientes----------------------------------------------------------------------------------------->
