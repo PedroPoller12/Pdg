@@ -79,6 +79,7 @@ class ProductoSelect(forms.Select):
 
         if value:
             option['attrs']['data-price'] = value.instance.precio
+            option['attrs']['data-descuento'] = value.instance.descuento
             option['attrs']['data-stock'] = value.instance.stock
         return option
 

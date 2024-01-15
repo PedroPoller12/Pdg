@@ -111,7 +111,11 @@
 				var $row = $(this).closest('.col-12');
 				DivId = $row.attr('id');
 				price = $(this).find('option:selected').data('price');
+				var descuento = $(this).find('option:selected').data('descuento');
  				quantity = $row.find('input[name$="-cantidad"]').val();
+				if (descuento != 0) {
+					price = price - descuento
+				}
 				var total = price * quantity;
 				checkAndUpdateTotal(DivId, total);
 			});
@@ -121,6 +125,7 @@
 				if (price) {
 					var $row = $(this).closest('.col-12');
 					var stock = $row.find('option:selected').data('stock');
+					var descuento = $row.find('option:selected').data('descuento');
 					quantity = $(this).val();
 					if (quantity <= stock) {
 						if ($(this).hasClass("invalid")) {
@@ -129,6 +134,9 @@
 						}
 						DivId = $row.attr('id');
 						price = $row.find('option:selected').data('price');
+						if (descuento != 0) {
+							price = price - descuento
+						}
 						var total = price * quantity;
 						checkAndUpdateTotal(DivId, total);
 					}else{

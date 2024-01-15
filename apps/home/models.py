@@ -129,6 +129,7 @@ class OrdenItem(models.Model):
             self.producto.ventas = self.producto.ventas + self.cantidad
         else:
             self.producto.ventas = self.cantidad
+            
         self.producto.save()
 
     def __str__(self):
