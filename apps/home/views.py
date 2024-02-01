@@ -349,20 +349,24 @@ def reporteClientes(request):
     column_titles = [ 'Nacionalidad','CI', 'Nombre', 'Apellido', 'Teléfono', 'Dirección', 'Email', 'Estatus']
     ws.append(column_titles)
 
-    # Consultar todos los clientes en la base de datos
-    clientes = Cliente.objects.all()
+    # Filtra los clientes por el valor de 'estatus'
+    estatus = request.GET.get('estatus', '')
+    if estatus:
+        clientes = Cliente.objects.filter(estatus=estatus)
+    else:
+        clientes = Cliente.objects.all()
 
     # Iterar sobre cada cliente y escribir la información en el archivo Excel
     for cliente in clientes:
         row = [ 
-            cliente.get_ci_tipo_display(),  # Obtiene la representación de la opción seleccionada
+            cliente.get_ci_tipo_display(), # Obtiene la representación de la opción seleccionada
             cliente.ci,
             cliente.nombre,
             cliente.apellido,
             cliente.telefono,
             cliente.direccion,
-            cliente.email if cliente.email else '',  # Comprueba si hay un email para evitar incluir None
-            cliente.get_estatus_display()  # Obtiene la representación de la opción seleccionada
+            cliente.email if cliente.email else '', # Comprueba si hay un email para evitar incluir None
+            cliente.get_estatus_display() # Obtiene la representación de la opción seleccionada
         ]
         ws.append(row)
 
