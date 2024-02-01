@@ -92,7 +92,7 @@ class Orden(models.Model):
     fecha_orden = models.DateTimeField(auto_now_add=True, null=True)
     monto_pagar = models.FloatField(validators=[MinValueValidator(0.0)], blank=True, null=True)
     monto_cacelado = models.FloatField(validators=[MinValueValidator(0.0)], blank=True, null=True, default=0)
-    completada = models.BooleanField(default=False, null=True)
+    completada = models.CharField(max_length=10, default='Pendiente')
 
     history = HistoricalRecords()
     

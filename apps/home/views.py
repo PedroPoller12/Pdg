@@ -32,7 +32,7 @@ def clientes(request):
 
     texto_busqueda = request.GET.get('texto_busqueda')#Tomar texto del buscador
     if texto_busqueda:#Si exste, filtrar
-        clientes_list = clientes_list.filter(Q(nombre__icontains=texto_busqueda)|Q(apellido__icontains=texto_busqueda)|Q(telefono__icontains=texto_busqueda)|Q(ci__icontains=texto_busqueda))#Filtros
+        clientes_list = clientes_list.filter(Q(nombre__icontains=texto_busqueda)|Q(apellido__icontains=texto_busqueda)|Q(telefono__icontains=texto_busqueda)|Q(estatus__icontains=texto_busqueda))#Filtros
     
     paginator = Paginator(clientes_list, per_page=13, orphans=2)#Iniciar el paginador
     page_number = request.GET.get('page')#Obtener el numero de página
@@ -156,7 +156,7 @@ def ordenes(request):
 
     texto_busqueda = request.GET.get('texto_busqueda')#Tomar texto del buscador
     if texto_busqueda:#Si exste, filtrar
-        ordenes_list = ordenes_list.filter(Q(cliente__nombre__icontains=texto_busqueda)|Q(cliente__apellido__icontains=texto_busqueda)|Q(fecha_orden__icontains=texto_busqueda)|Q(cliente__ci__icontains=texto_busqueda))#Filtros
+        ordenes_list = ordenes_list.filter(Q(cliente__nombre__icontains=texto_busqueda)|Q(cliente__apellido__icontains=texto_busqueda)|Q(fecha_orden__icontains=texto_busqueda)|Q(cliente__ci__icontains=texto_busqueda)|Q(completada__icontains=texto_busqueda))#Filtros
     
     paginator = Paginator(ordenes_list, per_page=13, orphans=2)#Iniciar el paginador
     page_number = request.GET.get('page')#Obtener el numero de página

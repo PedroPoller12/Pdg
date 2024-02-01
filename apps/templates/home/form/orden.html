@@ -180,8 +180,10 @@
 		}else{
 			//cambia el estado de la compra cuando el monto a pagar es cancelado
 			if (credito == 0){
-				console.log(credito)
-				$('input[name$="completada"]').val('True')
+				event.preventDefault();
+				console.log($('input[name$="completada"]').val())
+				$('input[name$="completada"]').val('Completada')
+				console.log($('input[name$="completada"]').val())
 				
 			}else if ( credito < 0) {
 				event.preventDefault(); // Evita que el formulario se envíe

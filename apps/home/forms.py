@@ -18,7 +18,7 @@ class OrdenForm(ModelForm):
             'cliente': Select(attrs={'class': 'form-control', 'placeholder':'', 'id':'cliente'}),
             'monto_cacelado': NumberInput(attrs={'class': 'form-control', 'placeholder':'', 'id':'monto_cacelado'}),
             'monto_pagar': HiddenInput(attrs={'id':'monto_pagar'}),
-            'completada': HiddenInput(attrs={'id':'completada'}),
+            'completada': TextInput(attrs={'class': 'd-none', 'id':'completada'}),
         }
 
 class ProductoForm(ModelForm):

@@ -86,10 +86,10 @@
                                                                 <h6 class="m-0">{{ orden.fecha_orden }}</h6>
                                                             </td>
                                                             <td>
-                                                                {% if orden.completada %}
-                                                                    <a class="no-select label theme-bg text-white f-12">Completada</a>
+                                                                {% if orden.completada  == 'Completada'%}
+                                                                    <a class="no-select label theme-bg text-white f-12">{{orden.completada}}</a>
                                                                 {% else %}
-                                                                    <a class="no-select label label-danger text-white f-12">Pendiente</a>
+                                                                    <a class="no-select label label-danger text-white f-12">{{orden.completada}}</a>
                                                                 {% endif %}
                                                             </td>
                                                         </tr>  

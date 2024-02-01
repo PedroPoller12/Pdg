@@ -24,7 +24,7 @@
             </td>
             
             <td class="text-center">
-                {% if orden.completada %}
+                {% if orden.completada == 'Completada' %}
                 <a class="no-select label theme-bg text-white f-12">Completada</a>
                 {% else %}
                 <a class="no-select label label-danger text-white f-12">Pendiente</a>
@@ -32,7 +32,7 @@
             </td>
             
             <td class="text-center">
-                {% if orden.completada %}
+                {% if orden.completada  == 'Completada' %}
                 <h6 class="mb-1">{{ orden.monto_cacelado }}</h6>
                 {% else %}
                 <h6 class="mb-1">{{ orden.monto_pagar }}</h6>
