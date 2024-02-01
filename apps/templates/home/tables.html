@@ -36,9 +36,21 @@
               <i class="feather icon-file-text"></i>Salida de Productos
             </a>
             {% elif title == "Órdenes de compra" %}
-            <a href="{% url 'orden_reporte' %}" class="btn btn-secondary">
-              <i class="feather icon-download"></i>Descargar Ordenes
+            <a class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="feather icon-download"></i>Descargar Reporte
             </a>
+            <div class="dropdown-menu">
+              <a href="{% url 'orden_reporte' %}" class=" dropdown-item">
+                <p class="text-dark">Descargar Ordenes</p>
+              </a>
+              <a href="{% url 'orden_reporte' %}?estatus=Completada" class="dropdown-item">
+                <p class="text-dark">Descargar Clientes Completada</p>
+              </a>
+              <a href="{% url 'orden_reporte' %}?estatus=Pendiente" class="dropdown-item">
+                <p class="text-dark">Descargar Clientes Pendiente</p>
+              </a>
+            </div>
+
             {% endif %}
 
             <a href="crear" class="btn btn-primary">

@@ -224,9 +224,8 @@ def ordenEliminar(request, pk):
 #Fin Órdenes-------------------------------------------------------------------------------------->
 
 #reportes------------------------------------------------------------------------------------------>
-#reporte de ordenes
 @login_required(login_url="/login/")
-@permission_required('home.view_orden', raise_exception=True)#Validar permiso
+@permission_required('home.view_orden', raise_exception=True)
 def reporteOrdenes(request):
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = 'attachment; filename="Report.xlsx"'
@@ -235,11 +234,15 @@ def reporteOrdenes(request):
     ws = wb.active
 
     # Añade los títulos de los campos en la primera fila
-    titles = ['ID', 'Cliente', 'Fecha de Orden', 'Monto a Pagar', 'Monto Cancelado', 'Completada']
+    titles = ['ID', 'Cliente', 'Fecha de Orden', 'Monto a Pagar', 'Monto Cancelado', 'Estatus']
     ws.append(titles)
 
-    # Supongamos que tienes un modelo llamado Orden y quieres exportar todos los registros
-    records = Orden.objects.all()
+    # Filtra las órdenes por el valor de 'estatus'
+    estatus = request.GET.get('estatus', '')
+    if estatus:
+        records = Orden.objects.filter(completada=estatus)
+    else:
+        records = Orden.objects.all()
 
     for record in records:
         # Asegúrate de que el objeto de fecha/hora no tenga información de zona horaria
@@ -248,8 +251,8 @@ def reporteOrdenes(request):
         # Construye la fila con los datos
         row = [
             record.id,
-            record.cliente.nombre + ' ' + record.cliente.apellido if record.cliente else '',  # Accede al nombre y apellido del cliente
-            fecha_orden.strftime('%Y-%m-%d %H:%M:%S'),  # Formatea la fecha
+            record.cliente.nombre + ' ' + record.cliente.apellido if record.cliente else '', # Accede al nombre y apellido del cliente
+            fecha_orden.strftime('%Y-%m-%d %H:%M:%S'), # Formatea la fecha
             record.monto_pagar,
             record.monto_cacelado,
             record.completada
@@ -259,6 +262,7 @@ def reporteOrdenes(request):
 
     wb.save(response)
     return response
+
 
 #Reporte de salida de productos
 @login_required(login_url="/login/")
