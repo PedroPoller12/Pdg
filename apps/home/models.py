@@ -90,7 +90,7 @@ class Orden(models.Model):
 
     cliente = models.ForeignKey('home.Cliente', on_delete=models.SET_NULL, null=True)
     fecha_orden = models.DateTimeField(auto_now_add=True, null=True)
-    monto_pagar = models.FloatField(validators=[MinValueValidator(0.0)], blank=True, null=True)
+    monto_pagar = models.FloatField(validators=[MinValueValidator(0.0)])
     monto_cacelado = models.FloatField(validators=[MinValueValidator(0.0)], blank=True, null=True, default=0)
     completada = models.CharField(max_length=10, default='Pendiente')
 
